@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.travel.mapper.OrdersMapper">
+	<resultMap id="orderMap" type="Orders">
+		<id column="id" property="id" />
+		<association property="product" javaType="Product">
+			<id column="pid" property="id" />
+		</association>
+		<association property="member" javaType="Member">
+			<id column="mid" property="id" />
+			<result column="mname" property="name" />
+			<result column="phone" property="phoneNum" />
+		</association>
+		<collection property="travellers" ofType="Traveller">
+			<id column="tid" property="id" />
+		</collection>
+	</resultMap>
+
+	<select id="findAllOrders" resultMap="orderMap" >
+		SELECT o.*,p.id pid,p.productName,p.productPrice
+		FROM orders o,product p
+		WHERE o.productId=p.id
+	</select>
+	<select id="findOrderById" resultMap="orderMap">
+		SELECT o.*,p.id pid,p.productName,p.cityName,p.departureTime,p.productPrice,
+	       t.id tid, t.NAME,t.sex,t.phoneNum,t.credentialsType,t.credentialsNum,t.travellerType,
+	       m.id mid,m.nickname,m.`NAME` mname,m.phoneNum phone,m.email
+		FROM orders o,product p,member m,order_traveller ot,traveller t
+		WHERE o.productId=p.id AND o.memberId=m.id AND o.id=ot.orderId AND ot.travellerId=t.id
+		  AND o.id=#{id}
+	</select>
+
+</mapper>

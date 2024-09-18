@@ -1,0 +1,509 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>产品列表</title>
+    <meta
+            content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+            name="viewport">
+
+    <![endif]-->
+
+    <link rel="stylesheet"
+          href="/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="/plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          href="/plugins/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet"
+          href="/plugins/iCheck/square/blue.css">
+    <link rel="stylesheet"
+          href="/plugins/morris/morris.css">
+    <link rel="stylesheet"
+          href="/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+    <link rel="stylesheet"
+          href="/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet"
+          href="/plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet"
+          href="/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <link rel="stylesheet"
+          href="/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet"
+          href="/plugins/treeTable/jquery.treetable.css">
+    <link rel="stylesheet"
+          href="/plugins/treeTable/jquery.treetable.theme.default.css">
+    <link rel="stylesheet"
+          href="/plugins/select2/select2.css">
+    <link rel="stylesheet"
+          href="/plugins/colorpicker/bootstrap-colorpicker.min.css">
+    <link rel="stylesheet"
+          href="/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css">
+    <link rel="stylesheet"
+          href="/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet"
+          href="/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet"
+          href="/css/style.css">
+    <link rel="stylesheet"
+          href="/plugins/ionslider/ion.rangeSlider.css">
+    <link rel="stylesheet"
+          href="/plugins/ionslider/ion.rangeSlider.skinNice.css">
+    <link rel="stylesheet"
+          href="/plugins/bootstrap-slider/slider.css">
+    <link rel="stylesheet"
+          href="/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.css">
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+
+<div class="wrapper">
+
+    <!-- 页面头部 -->
+    <div th:replace="header::head"></div>
+    <!-- 页面头部 /-->
+    <!-- 导航侧栏 -->
+    <div class="main-sidebar" th:replace="aside::aside"></div>
+    <!-- 导航侧栏 /-->
+
+    <!-- 内容区域 -->
+    <!-- @@master = admin-layout.html-->
+    <!-- @@block = content -->
+
+    <div class="content-wrapper">
+
+        <!-- 内容头部 -->
+        <section class="content-header">
+            <h1>
+                数据管理 <small>数据列表</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
+                <li><a href="#">数据管理</a></li>
+                <li class="active">数据列表</li>
+            </ol>
+        </section>
+        <!-- 内容头部 /-->
+        <form action="/product/findProductByParam"
+              method="post">
+            <input type="hidden" id="size" name="size" th:value="${pageInfo.pageSize}">
+            <input type="hidden" id="page" name="page" th:value="${pageInfo.pageNum}">
+            <!-- 正文区域 -->
+            <section class="content"> <!--产品信息-->
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">产品查询</div>
+                    <div class="row data-type">
+
+                        <div class="col-md-2 title">产品编号</div>
+                        <div class="col-md-4 data">
+                            <input type="text" class="form-control" name="productNum"
+                                   placeholder="产品编号" th:value="${prod?.productNum}">
+                        </div>
+                        <div class="col-md-2 title">产品名称</div>
+                        <div class="col-md-4 data">
+                            <input type="text" class="form-control" name="productName"
+                                   placeholder="产品名称" th:value="${prod?.productName}">
+                        </div>
+                        <div class="col-md-2 title">出发城市</div>
+                        <div class="col-md-4 data">
+                            <input type="text" class="form-control" name="cityName"
+                                   placeholder="出发城市" th:value="${prod?.cityName}">
+                        </div>
+
+                        <div class="col-md-2 title">产品价格</div>
+                        <div class="col-md-4 data">
+                            <input type="text" class="form-control" placeholder="产品价格"
+                                   name="productPrice" th:value="${prod?.productPrice}">
+                        </div>
+
+                        <div class="col-md-2 title">产品状态</div>
+                        <div class="col-md-4 data">
+                            <select class="form-control select2" style="width: 100%"
+                                    name="productStatus">
+                                <option th:selected="${prod?.productStatus==null}?'selected'" value="">--请选择--</option>
+                                <option th:selected="${prod?.productStatus==0}?'selected'">关闭</option>
+                                <option th:selected="${prod?.productStatus==1}?'selected'" >开启</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 title">出发时间</div>
+                        <div class="col-md-4 data">
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right"
+                                       id="datepicker-a3" th:value="${prod?.departureTime}" name="departureTime">
+                            </div>
+                        </div>
+                        <br>
+
+                        <!--订单信息/--> <!--工具栏-->
+                        <div class="box-tools text-center">
+                            <button onclick="findProductsByForm()" class="btn bg-maroon">查询</button>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <!--工具栏/--> </section>
+            <!-- 正文区域 /-->
+        </form>
+        <!-- 正文区域 -->
+        <section class="content">
+
+            <!-- .box-body -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">列表</h3>
+                </div>
+
+                <div class="box-body">
+
+                    <!-- 数据表格 -->
+                    <div class="table-box">
+
+                        <!--工具栏-->
+                        <div class="pull-left">
+                            <div class="form-group form-inline">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default" title="新建"
+                                            onclick="location.href='/product/toAdd'">
+                                        <i class="fa fa-file-o"></i> 新建
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="删除">
+                                        <i class="fa fa-trash-o"></i> 删除
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="开启">
+                                        <i class="fa fa-check"></i> 开启
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="屏蔽">
+                                        <i class="fa fa-ban"></i> 屏蔽
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="刷新">
+                                        <i class="fa fa-refresh"></i> 刷新
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-tools pull-right">
+                            <div class="has-feedback">
+                                <input type="text" class="form-control input-sm"
+                                       placeholder="搜索"> <span
+                                    class="glyphicon glyphicon-search form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <!--工具栏/-->
+
+                        <!--数据列表-->
+                        <table id="dataList"
+                               class="table table-bordered table-striped table-hover dataTable">
+                            <thead>
+                            <tr>
+                                <th class="" style="padding-right: 0px;"><input
+                                        id="selall" type="checkbox" class="icheckbox_square-blue">
+                                </th>
+                                <th class="sorting_asc">ID</th>
+                                <th class="sorting_desc">编号</th>
+                                <th class="sorting_asc sorting_asc_disabled">产品名称</th>
+                                <th class="sorting_desc sorting_desc_disabled">出发城市</th>
+                                <th class="sorting">出发时间</th>
+                                <th class="text-center sorting">产品价格</th>
+                                <th class="sorting">产品描述</th>
+                                <th class="text-center sorting">状态</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="product:${pageInfo.list}">
+                                    <td><input name="ids" type="checkbox"></td>
+                                    <td>[[${product.id}]]</td>
+                                    <td>[[${product.productNum }]]</td>
+                                    <td>[[${product.productName }]]</td>
+                                    <td>[[${product.cityName }]]</td>
+                                    <td>[[${#dates.format(product.departureTime,'yyyy-MM-dd') }]]</td>
+                                    <td class="text-center">[[${product.productPrice }]]</td>
+                                    <td>[[${product.productDesc }]]</td>
+                                    <td class="text-center">
+                                        <span th:text="${product.productStatus==0}?'关闭':'开启'">
+                                        </span>
+
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn bg-olive btn-xs">订单</button>
+                                        <button type="button" class="btn bg-olive btn-xs">详情</button>
+                                        <button type="button" class="btn bg-olive btn-xs">编辑</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                        <!--数据列表/-->
+
+                        <!--工具栏-->
+                        <div class="pull-left">
+                            <div class="form-group form-inline">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default" title="新建">
+                                        <i class="fa fa-file-o"></i> 新建
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="删除">
+                                        <i class="fa fa-trash-o"></i> 删除
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="开启">
+                                        <i class="fa fa-check"></i> 开启
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="屏蔽">
+                                        <i class="fa fa-ban"></i> 屏蔽
+                                    </button>
+                                    <button type="button" class="btn btn-default" title="刷新">
+                                        <i class="fa fa-refresh"></i> 刷新
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-tools pull-right">
+                            <div class="has-feedback">
+                                <input type="text" class="form-control input-sm"
+                                       placeholder="搜索"> <span
+                                    class="glyphicon glyphicon-search form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <!--工具栏/-->
+
+                    </div>
+                    <!-- 数据表格 /-->
+
+
+                </div>
+                <!-- /.box-body -->
+
+                <!-- .box-footer-->
+                <div class="box-footer">
+                    <div class="pull-left">
+                        <div class="form-group form-inline">
+                            总共 [[${pageInfo.pages}]] 页，共 [[${pageInfo.total}]] 条数据。 每页
+                            <select class="form-control" id="changePageSize" th:onchange="changePageSize()">
+                                <option th:selected="${pageInfo.pageSize==1}?'selected'">1</option>
+                                <option th:selected="${pageInfo.pageSize==2}?'selected'">2</option>
+                                <option th:selected="${pageInfo.pageSize==3}?'selected'">3</option>
+                                <option th:selected="${pageInfo.pageSize==4}?'selected'">4</option>
+                                <option th:selected="${pageInfo.pageSize==5}?'selected'">5</option>
+                            </select> 条
+                        </div>
+                    </div>
+
+                    <div class="box-tools pull-right">
+                        <ul class="pagination">
+                            <li><a onclick="pageOne()" aria-label="Previous">首页</a></li>
+                            <li><a onclick="pagePre()">上一页</a></li>
+
+                            <li th:each="p:${#numbers.sequence(1, pageInfo.pages)}">
+                                <a th:data="${p}" th:onclick="|pageThis(this.getAttribute('data'))|">[[${p}]]</a>
+                            </li>
+                            <li>
+                                <a onclick="pageNext()">下一页</a></li>
+                            <li><a onclick="pageEnd()" aria-label="Next">尾页</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+        <!-- 正文区域 /-->
+    </div>
+    <!-- @@close -->
+    <!-- 内容区域 /-->
+
+    <!-- 底部导航 -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.8
+        </div>
+        <strong>Copyright &copy; 2014-2017 <a
+                href="http://www.yunhe.cn">云和教务中心</a>.
+        </strong> All rights reserved.
+    </footer>
+    <!-- 底部导航 /-->
+
+</div>
+
+
+<script
+        src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script
+        src="/plugins/jQueryUI/jquery-ui.min.js"></script>
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<script
+        src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script
+        src="/plugins/raphael/raphael-min.js"></script>
+<script
+        src="/plugins/morris/morris.min.js"></script>
+<script
+        src="/plugins/sparkline/jquery.sparkline.min.js"></script>
+<script
+        src="/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+<script
+        src="/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script
+        src="/plugins/knob/jquery.knob.js"></script>
+<script
+        src="/plugins/daterangepicker/moment.min.js"></script>
+<script
+        src="/plugins/daterangepicker/daterangepicker.js"></script>
+<script
+        src="/plugins/daterangepicker/daterangepicker.zh-CN.js"></script>
+<script
+        src="/plugins/datepicker/bootstrap-datepicker.js"></script>
+<script
+        src="/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
+<script
+        src="/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<script
+        src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<script
+        src="/plugins/fastclick/fastclick.js"></script>
+<script
+        src="/plugins/iCheck/icheck.min.js"></script>
+<script
+        src="/plugins/adminLTE/js/app.min.js"></script>
+<script
+        src="/plugins/treeTable/jquery.treetable.js"></script>
+<script
+        src="/plugins/select2/select2.full.min.js"></script>
+<script
+        src="/plugins/colorpicker/bootstrap-colorpicker.min.js"></script>
+<script
+        src="/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.zh-CN.js"></script>
+<script
+        src="/plugins/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+<script
+        src="/plugins/bootstrap-markdown/locale/bootstrap-markdown.zh.js"></script>
+<script
+        src="/plugins/bootstrap-markdown/js/markdown.js"></script>
+<script
+        src="/plugins/bootstrap-markdown/js/to-markdown.js"></script>
+<script
+        src="/plugins/ckeditor/ckeditor.js"></script>
+<script
+        src="/plugins/input-mask/jquery.inputmask.js"></script>
+<script
+        src="/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script
+        src="/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script
+        src="/plugins/datatables/jquery.dataTables.min.js"></script>
+<script
+        src="/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script
+        src="/plugins/chartjs/Chart.min.js"></script>
+<script
+        src="/plugins/flot/jquery.flot.min.js"></script>
+<script
+        src="/plugins/flot/jquery.flot.resize.min.js"></script>
+<script
+        src="/plugins/flot/jquery.flot.pie.min.js"></script>
+<script
+        src="/plugins/flot/jquery.flot.categories.min.js"></script>
+<script
+        src="/plugins/ionslider/ion.rangeSlider.min.js"></script>
+<script
+        src="/plugins/bootstrap-slider/bootstrap-slider.js"></script>
+<script
+        src="/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+<script
+        src="/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        // 选择框
+        $(".select2").select2();
+
+        // WYSIHTML5编辑器
+        $(".textarea").wysihtml5({
+            locale : 'zh-CN'
+        });
+    });
+
+    // 设置激活菜单
+    function setSidebarActive(tagUri) {
+        var liObj = $("#" + tagUri);
+        if (liObj.length > 0) {
+            liObj.parent().parent().addClass("active");
+            liObj.addClass("active");
+        }
+    }
+
+    $(document).ready(function() {
+
+        // 激活导航位置
+        setSidebarActive("admin-datalist");
+
+        // 列表按钮
+        $("#dataList td input[type='checkbox']").iCheck({
+            checkboxClass : 'icheckbox_square-blue',
+            increaseArea : '20%'
+        });
+        // 全选操作
+        $("#selall").click(function() {
+            var clicks = $(this).is(':checked');
+            if (!clicks) {
+                $("#dataList td input[type='checkbox']").iCheck("uncheck");
+            } else {
+                $("#dataList td input[type='checkbox']").iCheck("check");
+            }
+            $(this).data("clicks", !clicks);
+        });
+    });
+
+    function changePageSize() {
+        //获取下拉框的值
+        var pageSize = $("#changePageSize").val();
+        //向服务器发送请求，改变没页显示条数
+        location.href = "/product/findAll?page=1&size="+pageSize;
+    }
+
+    //from表单提交
+    function findProductsByForm(){
+        //1.获取form表单
+        let productForm = document.querySelector("form");
+        //2.提交form表单
+        productForm.submit();
+    }
+    //获取form表单中当前页码
+    var page = document.getElementById("page");
+    //获取form表单中页面尺寸
+    var size = document.getElementById("size");
+    //首页
+    function pageOne(){
+        page.value=1;
+        findProductsByForm();
+    }
+
+    //末尾
+    function pageEnd(){
+        page.value=[[${pageInfo.pages}]]
+        findProductsByForm();
+    }
+    //下一页
+    function pageNext(){
+        page.value=page.value+1;
+        findProductsByForm();
+    }
+    //上一页
+    function pagePre(){
+        page.value=page.value-1;
+        findProductsByForm();
+    }
+    //跳转到指定页面
+    function pageThis(p){
+        page.value=p;
+        findProductsByForm();
+    }
+</script>
+</body>
+
+</html>

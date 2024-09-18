@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.travel.mapper.ProductMapper">
+	<insert id="addProduct">
+		insert into product(id,productNum,productName,cityName,departureTime,productPrice,productDesc,productStatus) values
+			(REPLACE(UUID(),"-",""),#{productNum},#{productName},#{cityName},#{departureTime},#{productPrice},#{productDesc},#{productStatus});
+	</insert>
+
+	<select id="findAllProduct" resultType="Product">
+		select *
+		from product
+	</select>
+	<select id="findAllProductByParam" resultType="Product">
+		select *
+		from product
+		<where>
+			<if test="productNum!=null and productNum!=''">
+				and productNum=#{productNum}
+			</if>
+			<if test="productName!=null and productName!=''">
+				and productName like concat('%',#{productName},'%')
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName=#{cityName}
+			</if>
+			<if test="productPrice!=null">
+				and productPrice=#{productPrice}
+			</if>
+			<if test="departureTime!=null">
+				and departureTime=#{departureTime}
+			</if>
+		</where>
+	</select>
+
+</mapper>

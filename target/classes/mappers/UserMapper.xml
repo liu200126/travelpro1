@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.travel.mapper.UserMapper">
+	<resultMap id="userMap" type="userInfo">
+		<id column="id" property="id" />
+		<collection property="roles" ofType="Role" column="id" select="findRolesByUserId" />
+	</resultMap>
+	<insert id="addUser" parameterType="userInfo">
+		insert into users
+		values (REPLACE(UUID(),"-",""),#{email},#{username},
+		                           #{password},#{phoneNum},#{status});
+	</insert>
+	<insert id="addRoleToUser">
+		insert into users_role values (#{userId},#{roleId})
+	</insert>
+
+	<select id="findUserByUserName" resultMap="userMap">
+		select *
+		from users where username=#{username}
+	</select>
+
+	<resultMap id="roleMap" type="role">
+		<id column="id" property="id" />
+		<collection property="permissions" ofType="permission" column="id" select="findPermsByRoleId" />
+	</resultMap>
+
+	<select id="findRolesByUserId" resultMap="roleMap">
+		select * from role where id
+		in
+		(select roleId from users_role where userId=#{id})
+	</select>
+
+	<select id="findPermsByRoleId" resultType="permission">
+		select * from permission where id
+		in
+		(select permissionId from role_permission where roleId=#{id})
+	</select>
+	<select id="findAllUsers" resultType="UserInfo">
+		select *
+		from users
+	</select>
+	<select id="findUserById" resultMap="userMap">
+		select * from users where id=#{id}
+	</select>
+	<select id="findOtherRole" resultType="Role">
+		select *
+		from role where id not in
+		(select roleId from users_role where userId=#{id})
+	</select>
+</mapper>

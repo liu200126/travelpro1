@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.travel.mapper.RoleMapper">
+
+	<select id="findAllRoles" resultType="Role">
+		select *
+		from role
+	</select>
+
+
+	<insert id="addRole" parameterType="role">
+		insert into role(id,roleName,roleDesc)  values (REPLACE(UUID(),"-",""),#{roleName},#{roleDesc})
+	</insert>
+
+
+	<select id="findOtherPermission" resultType="Permission" parameterType="string">
+		select *
+		from permission where id not in
+		(select permissionId from role_permission where roleId=#{roleId})
+	</select>
+
+	<insert id="addPermissionToRole">
+		insert into role_permission values (#{permissionId},#{roleId})
+	</insert>
+
+</mapper>

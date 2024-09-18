@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.travel.mapper.PermissionMapper">
+	<insert id="addPermission" parameterType="permission">
+		insert into permission(id,permissionName,url)
+		values (REPLACE(UUID(),"-",""),#{permissionName},#{url});
+	</insert>
+
+	<select id="findAllPermissions" resultType="Permission">
+		select * from permission
+	</select>
+</mapper>
